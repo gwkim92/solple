@@ -44,7 +44,7 @@ export const TransactionProvider = ({ children }) => {
   }, [])
 
   const connectWallet = async (metamask = eth) => {
-    console.log(await web3.eth.getBalance(serverAddress))
+    console.log(await web3.eth.getBalance(serverAddress));
     try {
       if (!metamask) return alert('Please install metamask ')
 
