@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.10;
+pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
@@ -7,18 +7,11 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
-contract NFT is ERC721URIStorage, Ownable, ERC721Enumerable {
+contract cozNFTs is ERC721URIStorage, Ownable, ERC721Enumerable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
-    constructor() public ERC721("Test", "TEST") {
-        // _setBaseURI("ipfs://");
-    }
- 
-    event NewNft(address owner,uint256 tokenId,string tokenUri);
-
-    uint [] public Alltokens;
-    
+    constructor() public ERC721("cozNFT", "NFT"){}
 
     function _beforeTokenTransfer(
         address from,
@@ -44,22 +37,20 @@ contract NFT is ERC721URIStorage, Ownable, ERC721Enumerable {
     {
         return super.supportsInterface(interfaceId);
     }
-    function tokenURI(uint256 tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory) {
+    function tokenURI(
+        uint256 tokenId
+    ) public view
+      override(ERC721, ERC721URIStorage) returns (string memory) {
         return super.tokenURI(tokenId);
     }
-
-    function mintNFT (string memory tokenURI) public returns (uint256){
-
+    
+    function mintNFT(address recipient, string memory tokenURI) public onlyOwner returns (uint256) {
         _tokenIds.increment();
-        uint256 newItemId = _tokenIds.current();
-        _mint(msg.sender, newItemId);
-        _setTokenURI(newItemId, tokenURI);
-        Alltokens.push(newItemId);
-        emit NewNft(msg.sender,newItemId,tokenURI);
-        return newItemId;
-    }
 
-    function showAllToken() public view returns(uint){
-        return Alltokens.length;
+        uint256 newItemId = _tokenIds.current();
+        _mint(recipient, newItemId);
+        _setTokenURI(newItemId, tokenURI);
+
+        return newItemId;
     }
 }

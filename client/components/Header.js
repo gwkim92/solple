@@ -38,8 +38,8 @@ const Header = () => {
           </Link>
         </Menu.Item>
         <Menu.Item>
-          <Link href="/mypage">
-            <a>mypage</a>
+          <Link href="/myPage">
+            <a>Mypage</a>
           </Link>
         </Menu.Item>
         <Menu.Item>

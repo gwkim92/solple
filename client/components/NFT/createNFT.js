@@ -141,17 +141,13 @@ const onSubmit = async (e) => {
     imgURI: `https://ipfs.io/ipfs/${imgHash.path}`,
   };
   const tokenURI = await ipfs.add(JSON.stringify(metadata));
-  const value = {
-    nftName: nftName,
-    nftDescription: nftDescription,
-    imgURI: `https://ipfs.io/ipfs/${imgHash.path}`,
-    tokenURI: `https://ipfs.io/ipfs/${tokenURI.path}`,
-    price: price,
-  };
-
-  console.log('value', value)
+ 
+  const tokenURIPath = tokenURI.path;
+  console.log('hash', imgHash)
+  console.log('metadata', metadata)
+  console.log('tokenURI', tokenURIPath)
   try {
-    await nftContract.methods.mintNFT(tokenURI).send({from: CurrentAccount});
+    await nftContract.methods.mintNFT(tokenURIPath).send({from: CurrentAccount});
 
   }catch(e){
     console.log('err' + e);
