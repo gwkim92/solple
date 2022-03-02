@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import styled from "styled-components";
 import { create } from "ipfs-http-client";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 // import axios from "axios";
 import Swal from "sweetalert2";
 import { TransactionContext } from "../../context/transactionContext";
@@ -91,7 +91,7 @@ const Button = styled.button`
 const createNFT = () => {
 
   const { connectWallet, CurrentAccount, nftContract, web3 } = useContext(TransactionContext)
-
+  
   console.log('NFTpage', { connectWallet, CurrentAccount, nftContract, web3})
 
   

@@ -1,25 +1,40 @@
-import axios from 'axios'
-import React from 'react'
+// import axios from 'axios'
+import React, { useState, useContext } from 'react'
+import { TransactionContext } from '../../context/transactionContext';
+const NftCardTemp = ({ UserNftlist }) => {
 
-function NftCardTemp({ UserNftlist }) {
+  const {CurrentAccount, nftContract } = useContext(TransactionContext)
+  const [Auctionsell, setsellPrice] = useState("");
+  const [onSale, setonSale] = useState(false);
+    console.log('log', UserNftlist)
+    let NFTid = UserNftlist[0].tokenId;
+    console.log(NFTid)
 
-    
-    // let URI = UserNftlist[0].tokenURI
-    // console.log('1', URI)
-    // let res = axios.get(`https://ipfs.io/ipfs/${URI}`)
-    // console.log('2', res)
+    const startAuction = async () => {
+      console.log('startid', NFTid)
+      let aa = await nftContract.methods.startAuction(NFTid, CurrentAccount, Auctionsell).send({from: CurrentAccount});
+      console.log(aa)
+      if(aa.blockhash !== undefined){
+        setonSale(true)
+      }
+    }
+
   return (
-    <div className="erc721list">
+    <div >
             {UserNftlist.map((token) => {
                 return (
-                    <div className="erc721token">
-                        Name: <span className="name">{token.name}</span>(
-                        <span className="symbol">{token.symbol}</span>)
-                        
-                        <div className="nft">id: {token.tokenId}</div>
+                    <div>
                         <img src={token.IMGURI} width={300} />
                         <div>NFTname: {token.NFTname}</div>
-                        <div>NFTDescription: {token.NFTDes}</div>
+                        <div>NFTDescription: {token.NFTdes}</div>
+                        <div>
+                        {onSale ? <div>판매중</div> :
+                          <div>
+                        <input style={{ border: 'none', borderBottom: '1px dashed' }} onChange={(e) => {setsellPrice(e.target.value)}}></input>
+                        <button onClick={startAuction}>sell</button>
+                        </div>
+                          }
+                        </div>
                     </div>
                 );
             })}

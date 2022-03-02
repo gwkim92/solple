@@ -28,7 +28,7 @@ const Header = () => {
           <Input.Search enterButton style={{ verticalAlign: 'middle' }} />
         </Menu.Item>
         <Menu.Item>
-          <Link href="/profile">
+          <Link href="/UserAuctionPage">
             <a>NFT Explore</a>
           </Link>
         </Menu.Item>
