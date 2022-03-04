@@ -9,6 +9,7 @@
     "@ant-design/icons": "^4.7.0",
     "antd": "^4.18.8",
     "axios": "^0.26.0",
+    "babel-plugin-styled-components": "^2.0.6",
     "bootstrap-next": "^1.0.5",
     "dotenv": "^16.0.0",
     "file-loader": "^6.2.0",

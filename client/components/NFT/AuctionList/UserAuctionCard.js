@@ -1,7 +1,7 @@
 // import axios from 'axios'
 import React, { useState, useContext } from 'react'
 import Link from 'next/link'
-import NftDetailPage from '../nftDetailPage';
+
 
 const UserAuctionCard = ({ UserNftlist }) => {
   console.log(UserNftlist)
@@ -27,7 +27,8 @@ const UserAuctionCard = ({ UserNftlist }) => {
                       { 
                         nftImg: token.IMGURI,
                         nftname: token.NFTname,
-                        nftDes: token.NFTDes
+                        nftDes: token.NFTDes,
+                        nftId: token.tokenId
                       }, }} as = {`/NftDetail/${token.tokenId}`}>
                 <button onClick={() => Auction(token)} >Auction</button>
               </Link>

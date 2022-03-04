@@ -37,7 +37,7 @@ contract NFT is ERC721URIStorage, Ownable, ERC721Enumerable {
     mapping(uint => Auction) auction;
     mapping(uint => mapping(address => uint)) public bids;
     uint256 [] public onBidNftArray;
-
+    uint256 [] public onSaleImformation;
     constructor() public ERC721("Test", "TEST") {}
  
     
@@ -148,6 +148,7 @@ contract NFT is ERC721URIStorage, Ownable, ERC721Enumerable {
         } else {
             safeTransferFrom(address(this), auction[nftId].owner, nftId);
         }
+        
         emit End(auction[nftId].highestBidder, auction[nftId].highestBid);
         //유저가 소유 하고 있는 경우//
         // auction[nftId].ended = true;

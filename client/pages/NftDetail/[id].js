@@ -9,7 +9,7 @@ const NftDetail = () => {
     <>
     <Head>
       <meta charSet="utf-8" />
-      <title>Auction | MeTa</title>
+      <title>DetailAuctionPage | MeTa</title>
     </Head>
     <Header />
     <NftDetailPage />

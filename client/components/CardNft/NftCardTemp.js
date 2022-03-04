@@ -1,9 +1,9 @@
 // import axios from 'axios'
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { TransactionContext } from '../../context/transactionContext';
 const NftCardTemp = ({ UserNftlist }) => {
 
-  const {CurrentAccount, nftContract } = useContext(TransactionContext)
+  const {CurrentAccount, nftContract, web3 } = useContext(TransactionContext)
   const [Auctionsell, setsellPrice] = useState("");
   const [onSale, setonSale] = useState(false);
     console.log('log', UserNftlist)
@@ -12,12 +12,22 @@ const NftCardTemp = ({ UserNftlist }) => {
 
     const startAuction = async () => {
       console.log('startid', NFTid)
-      let aa = await nftContract.methods.startAuction(NFTid, CurrentAccount, Auctionsell).send({from: CurrentAccount});
+      let aa = await nftContract.methods.startAuction(NFTid, CurrentAccount, web3.utils.toWei(Auctionsell, 'ether')).send({from: CurrentAccount});
       console.log(aa)
       if(aa.blockhash !== undefined){
         setonSale(true)
       }
     }
+
+    const getStartEnd = async() => {
+      let gs = await nftContract.getPastEvents('Start', {fromBlock: 1, toBlock:'latest'})
+      let ge = await nftContract.getPastEvents('Endedat', {fromBlock: 1, toBlock:'latest'})
+      console.log('1', gs, ge)
+    }
+    useEffect(() => {
+       
+        getStartEnd();
+      }, [])
 
   return (
     <div >

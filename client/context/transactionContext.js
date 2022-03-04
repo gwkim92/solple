@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Nftabi from '../abi/Nft';
+import Token from '../abi/Token';
 import Web3 from 'web3';
 
 // const web3 = new Web3(
@@ -26,15 +27,19 @@ const web3 = new Web3(eth)
 
 const serverAddress = process.env.SERVERADDRESS;
 const serverPrivateKey = process.env.SERVERPRIVATE;
-const NFTADDRESS = process.env.NFTADDRESS
-
+const NFTADDRESS = process.env.NFTADDRESS;
+const ToKenAddress = process.env.TOKENADDRESS;
+console.log('TA', ToKenAddress)
 const newContract = (web3, abi, ca) => {
+  console.log('ca', ca)
 	return new web3.eth.Contract(abi, ca, {
 		from: serverAddress,
 		gas: 3000000,
 	});
 };
+
 const nftContract = newContract(web3, Nftabi, NFTADDRESS); // nft
+const tokenContract = newContract(web3, Token, ToKenAddress);
 
 export const TransactionProvider = ({ children }) => {
   const [CurrentAccount, setCurrentAccount] = useState()
@@ -82,7 +87,9 @@ export const TransactionProvider = ({ children }) => {
               serverAddress,
               serverPrivateKey,
               web3,
-              NFTADDRESS
+              NFTADDRESS,
+              tokenContract,
+              ToKenAddress
           }}
         >
             {children}
