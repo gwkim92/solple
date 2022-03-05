@@ -19,7 +19,7 @@ contract NFT is ERC721URIStorage, Ownable, ERC721Enumerable {
 
     ////////////////////
     event Start();
-    event Bid(address indexed sender, uint amount);
+    event Bid(address indexed sender, uint amount, uint nftId);
     event Withdraw(address indexed bidder, uint amount);
     event End(address winner, uint amount);
     event Endedat(uint a);
@@ -121,7 +121,7 @@ contract NFT is ERC721URIStorage, Ownable, ERC721Enumerable {
         auction[nftId].highestBidder = buyer;
         auction[nftId].highestBid = amount;
        
-        emit Bid(auction[nftId].highestBidder, auction[nftId].highestBid);
+        emit Bid(auction[nftId].highestBidder, auction[nftId].highestBid, nftId);
     }
 
     function withdraw(address addr, uint nftId) public {

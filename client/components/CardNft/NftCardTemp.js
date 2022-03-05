@@ -19,15 +19,6 @@ const NftCardTemp = ({ UserNftlist }) => {
       }
     }
 
-    const getStartEnd = async() => {
-      let gs = await nftContract.getPastEvents('Start', {fromBlock: 1, toBlock:'latest'})
-      let ge = await nftContract.getPastEvents('Endedat', {fromBlock: 1, toBlock:'latest'})
-      console.log('1', gs, ge)
-    }
-    useEffect(() => {
-       
-        getStartEnd();
-      }, [])
 
   return (
     <div >

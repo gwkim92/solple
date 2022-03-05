@@ -42,7 +42,8 @@ const BidBox = Styled.div`
 function nftDetailPage({ router: { query } }) {
   const { CurrentAccount, tokenContract, nftContract, NFTADDRESS, ToKenAddress, web3 } = useContext(TransactionContext)
   const [bidding, setbidding] = useState('')
-
+  const [userImformation, setuserImformation] = useState('')
+  const [userBid, setuserBid] = useState('')
   const DetailImg = query.nftImg;
   const DetailName = query.nftname;
   const DetailDes = query.nftDes;
@@ -64,6 +65,8 @@ function nftDetailPage({ router: { query } }) {
       console.log(bid)
       }
   }
+
+  
   // const getData = async () => {
   //   let StartAuctionDate = await nftContract.events.Start();
   //   // let BidData = await nftContract.events.Bid({filter: {sender: CurrentAccount}});
@@ -78,8 +81,34 @@ function nftDetailPage({ router: { query } }) {
        
   //   getData();
   // }, [])
+  const getStartEnd = async() => {
+    let gs = await nftContract.getPastEvents('Start', {fromBlock: 1, toBlock:'latest'})
+    let ge = await nftContract.getPastEvents('Endedat', {fromBlock: 1, toBlock:'latest'})
+    let gb = await nftContract.getPastEvents('Bid', {fromBlock: 1, toBlock:'latest'})
+    console.log('1', gs)
+    console.log('ge', ge)
+    console.log('gb', gb)
+    console.log('bidData', gb[0].returnValues)
+    console.log('bidLength', gb.length)
+   
+    for (let i = 0; i < gb.length; i++) {
+       if(NftId === gb[i].returnValues.nftId){
+       console.log(NftId)
+       console.log(gb[i].returnValues)
+       const user = gb[i].returnValues.sender;
+       const money = gb[i].returnValues.amount;
+       setuserImformation(user);
+       setuserBid(money);
+       }
+    }
+  }
+
+  const TransBid = (web3.utils.fromWei(web3.utils.toBN(userBid), 'ether'));
   
-  
+  useEffect(() => {
+     
+      getStartEnd();
+    }, [])
   return (
     <FirstDiv>
       <SecDiv>
@@ -104,9 +133,13 @@ function nftDetailPage({ router: { query } }) {
                 </h2>
                 <hr />
                 <br />
-                <h1>현재 가격</h1>
+                <h1>현재 최고 가격</h1>
                 <h2>
-                  <TextBox>Bid</TextBox>
+                  <TextBox>{TransBid}Token</TextBox>
+                </h2>
+                <h1>현재 최고 입찰자</h1>
+                <h2>
+                  <TextBox>{userImformation}</TextBox>
                 </h2>
                 <BidBox>
                   <input
