@@ -18,11 +18,11 @@ contract NFT is ERC721URIStorage, Ownable, ERC721Enumerable {
     uint [] public Alltokens;
 
     ////////////////////
-    event Start();
+    event Start(address indexed auctionor, uint nftId);
     event Bid(address indexed sender, uint amount, uint nftId);
     event Withdraw(address indexed bidder, uint amount);
     event End(address winner, uint amount);
-    event Endedat(uint a);
+    event Endedat(uint target, uint nftId);
 
     struct Auction {
             bool started;
@@ -105,8 +105,8 @@ contract NFT is ERC721URIStorage, Ownable, ERC721Enumerable {
          auction[nftId].endAt = block.timestamp + 1 days;
 
          onBidNftArray.push(nftId);
-         emit Start();
-         emit Endedat(auction[nftId].endAt);
+         emit Start(auction[nftId].owner, nftId);
+         emit Endedat(auction[nftId].endAt, nftId);
       }
 
     function bid(uint nftId, address buyer, uint amount) public {

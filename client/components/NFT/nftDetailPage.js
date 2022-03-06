@@ -1,8 +1,9 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect, useCallback } from 'react'
 import { withRouter } from 'next/router'
 import Styled from 'styled-components'
 import { Row, Col } from 'antd'
 import { TransactionContext } from '../../context/transactionContext'
+import moment from "moment";
 const FirstDiv = Styled.div`
   display: flex;
   justify-content: center;
@@ -41,17 +42,18 @@ const BidBox = Styled.div`
 `
 function nftDetailPage({ router: { query } }) {
   const { CurrentAccount, tokenContract, nftContract, NFTADDRESS, ToKenAddress, web3 } = useContext(TransactionContext)
-  const [bidding, setbidding] = useState('')
-  const [userImformation, setuserImformation] = useState('')
-  const [userBid, setuserBid] = useState('')
+  const [bidding, setbidding] = useState('');
+  const [userImformation, setuserImformation] = useState('');
+  const [userBid, setuserBid] = useState('');
+  const [dateTarget, setdateTarget] = useState('');
+  const [complete, setComplete] = useState(false);
   const DetailImg = query.nftImg;
   const DetailName = query.nftname;
   const DetailDes = query.nftDes;
   const NftId = query.nftId;
-  console.log(query)
   const nftAdd = NFTADDRESS;
   
-  console.log(bidding)
+ 
 
   const startBidding = async () => {
     //1. approveToken approveToken(buyer,process.env.NFTTOKENCA)
@@ -66,31 +68,12 @@ function nftDetailPage({ router: { query } }) {
       }
   }
 
-  
-  // const getData = async () => {
-  //   let StartAuctionDate = await nftContract.events.Start();
-  //   // let BidData = await nftContract.events.Bid({filter: {sender: CurrentAccount}});
-  //   // let WithdrawData = await nftContract.events.Withdraw();
-  //   // let EndData = await nftContract.events.End();
-  //   // let Endedat = await nftContract.events.Endedat();
-  //   // console.log(StartAuctionDate, BidData, WithdrawData, EndData, Endedat)
-  //   console.log(StartAuctionDate)
-  // }
-
-  // useEffect(() => {
-       
-  //   getData();
-  // }, [])
   const getStartEnd = async() => {
-    let gs = await nftContract.getPastEvents('Start', {fromBlock: 1, toBlock:'latest'})
+    // let gs = await nftContract.getPastEvents('Start', {fromBlock: 1, toBlock:'latest'})
     let ge = await nftContract.getPastEvents('Endedat', {fromBlock: 1, toBlock:'latest'})
     let gb = await nftContract.getPastEvents('Bid', {fromBlock: 1, toBlock:'latest'})
-    console.log('1', gs)
-    console.log('ge', ge)
-    console.log('gb', gb)
-    console.log('bidData', gb[0].returnValues)
-    console.log('bidLength', gb.length)
-   
+    // console.log(ge)
+       
     for (let i = 0; i < gb.length; i++) {
        if(NftId === gb[i].returnValues.nftId){
        console.log(NftId)
@@ -101,14 +84,76 @@ function nftDetailPage({ router: { query } }) {
        setuserBid(money);
        }
     }
+    for(let i = 0; i < gb.length; i++){
+      if(NftId === ge[i].returnValues.nftId){
+        const target = ge[i].returnValues.target;
+        // console.log(target)
+        setdateTarget(target);
+      }
+    }
   }
 
   const TransBid = (web3.utils.fromWei(web3.utils.toBN(userBid), 'ether'));
+
+  const today = new Date(dateTarget * 1000);
+
+  const countDown = useCallback((data) => {
+    let timer;
+    let _vDate = data;
+    let _second = 1000;
+    let _minute = _second * 60;
+    let _hour = _minute * 60;
+    let _day = _hour * 24;
+    console.log(_vDate)
+    function showRemaining() {
+      try {
+        if (data !== undefined) {
+          let now = moment();
+          // let now = new Date().getTime();
+          let distDt = _vDate - now;
+          // console.log('2', distDt)
+          if (distDt < 0) {
+            clearInterval(timer);
+            let HapDate =
+              // '0' + 'd ' +
+              "0" + "h " + "0" + "m " + "0" + "s ";
+            document.getElementById("timer").innerHTML = HapDate;
+            // console.log('1',HapDate)
+            return;
+          } else {
+            setComplete(true);
+            // let days = Math.floor(distDt / _day);
+            let hours = Math.floor(distDt  / _hour);
+            let minutes = Math.floor((distDt % _hour) / _minute);
+            let seconds = Math.floor((distDt % _minute) / _second);
+            let HapDate =
+              // parseInt(days) +
+              // 'd ' +
+              parseInt(hours) +
+              " : " +
+              parseInt(minutes) +
+              " : " +
+              parseInt(seconds) +
+              " ";
+            document.getElementById("timer").innerHTML = HapDate;
+            // console.log('1',HapDate)
+          }
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
+
+    timer = setInterval(showRemaining, 1000);
+  }, []);
   
+
+
   useEffect(() => {
      
       getStartEnd();
     }, [])
+
   return (
     <FirstDiv>
       <SecDiv>
@@ -126,10 +171,10 @@ function nftDetailPage({ router: { query } }) {
               <h2>
                 <TextBox>{DetailDes}</TextBox>
               </h2>
-                <h1>경매 종료 일</h1>
+                <h1>경매 남은 시간</h1>
                 <hr />
                 <h2>
-                  <TextBox>D-day</TextBox>
+                  <TextBox><div><span id="timer" className="timer">{countDown(today)}</span></div></TextBox>
                 </h2>
                 <hr />
                 <br />
