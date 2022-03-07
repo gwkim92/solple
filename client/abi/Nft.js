@@ -349,7 +349,20 @@ export default [
 	},
 	{
 		"anonymous": false,
-		"inputs": [],
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "auctionor",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "nftId",
+				"type": "uint256"
+			}
+		],
 		"name": "Start",
 		"type": "event"
 	},
